@@ -22,10 +22,19 @@ server = "mail.myhorizoncu.com"
 
 #The windows event for an AD lockout is 4740, sometimes this will be 4672 for testing
 try:
+        #Search Windows Event log for the last 4740 event and return the value as 'windowsEvent'
 	windowsEvent = subprocess.check_output('wevtutil qe Security "/q:*[System [(EventID=4740)]]" /f:text /rd:true /c:1')
-	searchString = re.search('Account Name:.*',windowsEvent)
-	lockedUser = (searchString.group(0).split())[2]
-	emailMessage = "The following AD account has been locked: %s" %(lockedUser)
+
+	#regex and parse out the username from 'windowsEvent'
+	searchUser = re.search(r'(Account Name:\\t\\t(?![vV][sS])[a-zA-Z]*(?!\Add))',str(windowsEvent))
+	lockedUser = (re.split(r'\\t', searchUser.group(0)))[2]
+
+	#regex and parse out the computer from 'windowsEvent'
+	searchComputer = re.search(r'(Computer Name:\\t\w*)',str(windowsEvent))
+	lockedComputer = (re.split(r'\\t',searchComputer.group(1)))[1]
+
+	#create the email message string
+	emailMessage = "The following AD account has been locked: %s on computer %s" %(lockedUser,lockedComputer)
 
 except:
 	subprocess.call('eventcreate /ID 1 /L APPLICATION /T WARNING  /SO AD-Lockout-Notifier /D "Could not query the Windows Event Log."')

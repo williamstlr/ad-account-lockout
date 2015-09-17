@@ -15,17 +15,17 @@ import smtplib,socket
 import sys
 
 #Email setup
-sender = 'vs-w2k8-pdc@myhorizoncu.com'
-receivers = ['someaddress@here.com']
-subject = "AD Account Lockout"
-server = "mail.myhorizoncu.com"
+sender = 'notifier@somedomain.com'
+receivers = ['youraddress@somedomain.com']
+subject = 'AD Account Lockout'
+server = 'mail.somedomain.com'
 
 #The windows event for an AD lockout is 4740, sometimes this will be 4672 for testing
 try:
         #Search Windows Event log for the last 4740 event and return the value as 'windowsEvent'
 	windowsEvent = subprocess.check_output('wevtutil qe Security "/q:*[System [(EventID=4740)]]" /f:text /rd:true /c:1')
 
-	#regex and parse out the username and computer from 'windowsEvent'. Tabs and return characters need to literal for some reason
+	#regex and parse out the username and computer from 'windowsEvent'. Tabs and return characters need to be literal when regex'd
 	lockedUser = (re.search(r'(?<=Account Name:\\t\\t)([a-z]*)(?=\\r\\n)',str(windowsEvent))).group(0)
 	lockedComputer = (re.search(r'(?<=Caller Computer Name:\\t)(\w*)(?=\\r\\n)',str(windowsEvent))).group(0)
 

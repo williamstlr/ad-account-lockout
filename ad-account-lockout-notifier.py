@@ -16,7 +16,7 @@ import sys
 
 #Email setup
 sender = 'vs-w2k8-pdc@myhorizoncu.com'
-receivers = ['tyler@myhorizoncu.com','8013098557@message.ting.com','8016987847@vtext.com']
+receivers = ['someaddress@here.com']
 subject = "AD Account Lockout"
 server = "mail.myhorizoncu.com"
 

@@ -2,7 +2,7 @@
 $recipients = "recepient1@example.com","recipient2@example.com"
 
 #Get the latest lockout event from the Security log
-$event = (get-winevent -filterhashtable @{logname="Security";id=4740} -MaxEvents 1 -ComputerName vs-w2k8-pdc).message
+$event = (get-winevent -filterhashtable @{logname="Security";id=4740} -MaxEvents 1 -ComputerName exampledomaincontroller).message
 
 #Regex out the locked out user and computer and assign them to $matches, then break those out to usable variables
 $matches = ([regex] "(?<=Account Name:\t\t)[a-z]*(?=\r\n)|(?<=Caller Computer Name:\t).*").Matches($event)
